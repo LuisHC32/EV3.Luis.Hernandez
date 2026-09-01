@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { AuthMessage } from "@/components/AuthMessage";
 import { registerSchema } from "@/lib/validators";
@@ -18,6 +19,7 @@ export function RegisterForm() {
   const [nombre, setNombre] = useState("");
   const [correo, setCorreo] = useState("");
   const [clave, setClave] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [messageType, setMessageType] = useState<"success" | "error" | null>(
     null,
@@ -69,59 +71,124 @@ export function RegisterForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex w-full flex-col gap-4">
-      <label className="flex flex-col gap-1 text-sm">
-        <span className="font-medium text-zinc-800">Nombre</span>
-        <input
-          type="text"
-          name="nombre"
-          required
-          autoComplete="name"
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
-          className="rounded-md border border-zinc-300 px-3 py-2 outline-none focus:border-zinc-700"
-        />
-      </label>
+    <form className="space-y-lg" onSubmit={onSubmit}>
+      <div className="space-y-xs">
+        <label
+          className="font-label-md text-label-md block text-on-surface"
+          htmlFor="name"
+        >
+          Nombre
+        </label>
+        <div className="relative">
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-md">
+            <span className="material-symbols-outlined text-[20px] text-on-surface-variant">
+              person
+            </span>
+          </div>
+          <input
+            className="font-body-md text-body-md block w-full rounded-lg border border-outline-variant bg-white py-md pr-md pl-2xl text-on-surface shadow-sm transition-shadow placeholder:text-on-surface-variant focus:border-secondary focus:ring-2 focus:ring-secondary"
+            id="name"
+            name="name"
+            placeholder="Nombre completo"
+            required
+            type="text"
+            autoComplete="name"
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+          />
+        </div>
+      </div>
 
-      <label className="flex flex-col gap-1 text-sm">
-        <span className="font-medium text-zinc-800">Correo</span>
-        <input
-          type="email"
-          name="correo"
-          required
-          autoComplete="email"
-          value={correo}
-          onChange={(e) => setCorreo(e.target.value)}
-          className="rounded-md border border-zinc-300 px-3 py-2 outline-none focus:border-zinc-700"
-        />
-      </label>
+      <div className="space-y-xs">
+        <label
+          className="font-label-md text-label-md block text-on-surface"
+          htmlFor="email"
+        >
+          Correo electrónico
+        </label>
+        <div className="relative">
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-md">
+            <span className="material-symbols-outlined text-[20px] text-on-surface-variant">
+              mail
+            </span>
+          </div>
+          <input
+            className="font-body-md text-body-md block w-full rounded-lg border border-outline-variant bg-white py-md pr-md pl-2xl text-on-surface shadow-sm transition-shadow placeholder:text-on-surface-variant focus:border-secondary focus:ring-2 focus:ring-secondary"
+            id="email"
+            name="email"
+            placeholder="nombre@empresa.com"
+            required
+            type="email"
+            autoComplete="email"
+            value={correo}
+            onChange={(e) => setCorreo(e.target.value)}
+          />
+        </div>
+      </div>
 
-      <label className="flex flex-col gap-1 text-sm">
-        <span className="font-medium text-zinc-800">Clave</span>
-        <input
-          type="password"
-          name="clave"
-          required
-          minLength={8}
-          autoComplete="new-password"
-          value={clave}
-          onChange={(e) => setClave(e.target.value)}
-          className="rounded-md border border-zinc-300 px-3 py-2 outline-none focus:border-zinc-700"
-        />
-        <span className="text-xs text-zinc-500">
+      <div className="space-y-xs">
+        <label
+          className="font-label-md text-label-md block text-on-surface"
+          htmlFor="password"
+        >
+          Contraseña
+        </label>
+        <div className="relative">
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-md">
+            <span className="material-symbols-outlined text-[20px] text-on-surface-variant">
+              lock
+            </span>
+          </div>
+          <input
+            className="font-body-md text-body-md block w-full rounded-lg border border-outline-variant bg-white py-md pr-2xl pl-2xl text-on-surface shadow-sm transition-shadow placeholder:text-on-surface-variant focus:border-secondary focus:ring-2 focus:ring-secondary"
+            id="password"
+            name="password"
+            placeholder="••••••••"
+            required
+            type={showPassword ? "text" : "password"}
+            autoComplete="new-password"
+            value={clave}
+            onChange={(e) => setClave(e.target.value)}
+          />
+          <button
+            className="absolute inset-y-0 right-0 flex items-center pr-md text-outline transition-colors hover:text-on-surface-variant"
+            type="button"
+            aria-label={
+              showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+            }
+            onClick={() => setShowPassword((visible) => !visible)}
+          >
+            <span className="material-symbols-outlined text-[20px]">
+              {showPassword ? "visibility" : "visibility_off"}
+            </span>
+          </button>
+        </div>
+        <p className="font-label-md text-label-md text-on-surface-variant">
           Mínimo 8 caracteres, con mayúscula, minúscula y número.
-        </span>
-      </label>
+        </p>
+      </div>
 
       <button
+        className="font-label-md text-label-md flex w-full justify-center rounded-lg border border-transparent bg-secondary px-lg py-md text-white shadow-sm transition-all hover:bg-on-secondary-fixed-variant focus:ring-2 focus:ring-secondary focus:ring-offset-2 focus:outline-none active:scale-[0.98] disabled:opacity-60"
         type="submit"
         disabled={loading}
-        className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
       >
         {loading ? "Registrando..." : "Registrarse"}
       </button>
 
       <AuthMessage type={messageType} text={message} />
+
+      <div className="pt-md text-center">
+        <p className="font-body-md text-body-md text-on-surface-variant">
+          ¿Ya tienes una cuenta?{" "}
+          <Link
+            href="/login"
+            className="font-label-md text-label-md ml-xs text-secondary transition-colors hover:text-on-secondary-fixed-variant"
+          >
+            Iniciar sesión
+          </Link>
+        </p>
+      </div>
     </form>
   );
 }

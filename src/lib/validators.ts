@@ -18,10 +18,37 @@ export const loginSchema = z.object({
   clave: z.string().min(1, "La clave es obligatoria"),
 });
 
+const requiredNonEmptyText = (label: string) =>
+  z
+    .string({ error: `${label} es obligatorio` })
+    .trim()
+    .min(1, `${label} no puede estar vacío`);
+
 export const proyectoSchema = z.object({
-  nombre: z.string().trim().min(2, "El nombre del proyecto es obligatorio"),
-  fecha_inicio: z.string().min(1, "La fecha de inicio es obligatoria"),
-  estado: z.string().trim().min(2, "El estado es obligatorio"),
-  responsable: z.string().trim().min(2, "El responsable es obligatorio"),
-  monto: z.coerce.number().nonnegative("El monto no puede ser negativo"),
+  nombre: requiredNonEmptyText("El nombre del proyecto"),
+  fecha_inicio: requiredNonEmptyText("La fecha de inicio").refine(
+    (value) => !Number.isNaN(new Date(value).getTime()),
+    "La fecha de inicio no es válida",
+  ),
+  estado: requiredNonEmptyText("El estado"),
+  responsable: requiredNonEmptyText("El responsable"),
+  monto: z
+    .union([z.string(), z.number()], { error: "El monto es obligatorio" })
+    .refine(
+      (value) =>
+        value !== "" &&
+        value !== null &&
+        value !== undefined &&
+        !(typeof value === "string" && value.trim() === ""),
+      "El monto no puede estar vacío",
+    )
+    .transform((value) =>
+      typeof value === "string" ? Number(value.trim()) : value,
+    )
+    .pipe(
+      z
+        .number({ error: "El monto debe ser un número válido" })
+        .nonnegative("El monto no puede ser negativo")
+        .int("El monto debe ser un número entero (pesos chilenos, sin decimales)"),
+    ),
 });

@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAuthenticatedUser } from "@/lib/auth";
+import { serializeProyecto } from "@/lib/proyecto-serializer";
 import { proyectoSchema } from "@/lib/validators";
 import { handleApiError, jsonError, jsonOk } from "@/lib/api";
 
@@ -15,7 +16,7 @@ export async function GET(request: NextRequest) {
       orderBy: { id: "desc" },
     });
 
-    return jsonOk({ proyectos });
+    return jsonOk(proyectos.map(serializeProyecto));
   } catch (error) {
     return handleApiError(error);
   }
@@ -31,15 +32,10 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const data = proyectoSchema.parse(body);
 
-    const fecha = new Date(data.fecha_inicio);
-    if (Number.isNaN(fecha.getTime())) {
-      return jsonError("La fecha de inicio no es válida", 400);
-    }
-
     const proyecto = await prisma.proyecto.create({
       data: {
         nombre: data.nombre,
-        fecha_inicio: fecha,
+        fecha_inicio: new Date(data.fecha_inicio),
         estado: data.estado,
         responsable: data.responsable,
         monto: data.monto,
@@ -47,13 +43,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return jsonOk(
-      {
-        message: "Proyecto creado correctamente",
-        proyecto,
-      },
-      201,
-    );
+    return jsonOk(serializeProyecto(proyecto), 201);
   } catch (error) {
     return handleApiError(error);
   }

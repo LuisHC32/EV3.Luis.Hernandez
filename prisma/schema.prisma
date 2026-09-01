@@ -23,7 +23,7 @@ model Proyecto {
   fecha_inicio DateTime @db.Date
   estado       String   @db.VarChar(50)
   responsable  String   @db.VarChar(120)
-  monto        Decimal  @db.Decimal(12, 2)
+  monto        Int      @db.UnsignedInt
   created_by   Int
   creador      Usuario  @relation(fields: [created_by], references: [id], onDelete: Restrict)
 

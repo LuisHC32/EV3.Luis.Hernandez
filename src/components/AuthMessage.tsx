@@ -8,11 +8,14 @@ export function AuthMessage({ type, text }: AuthMessageProps) {
 
   const className =
     type === "success"
-      ? "border-emerald-300 bg-emerald-50 text-emerald-900"
-      : "border-rose-300 bg-rose-50 text-rose-900";
+      ? "border-outline-variant bg-surface-container-low text-on-surface"
+      : "border-transparent bg-error-container text-on-error-container";
 
   return (
-    <div className={`rounded-md border px-3 py-2 text-sm ${className}`} role="alert">
+    <div
+      className={`font-body-md text-body-md rounded-lg border px-md py-sm ${className}`}
+      role="alert"
+    >
       {text}
     </div>
   );

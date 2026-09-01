@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS proyectos (
   fecha_inicio DATE NOT NULL,
   estado VARCHAR(50) NOT NULL,
   responsable VARCHAR(120) NOT NULL,
-  monto DECIMAL(12, 2) NOT NULL,
+  monto INT UNSIGNED NOT NULL,
   created_by INT NOT NULL,
   PRIMARY KEY (id),
   KEY idx_proyectos_created_by (created_by),
